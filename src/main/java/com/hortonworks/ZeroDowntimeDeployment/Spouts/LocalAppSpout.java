@@ -14,6 +14,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.Utils;
 
 import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 
@@ -61,6 +62,8 @@ public class LocalAppSpout extends BaseRichSpout {
 	@Override
 	public void nextTuple() {
 
+		Utils.sleep(10);
+		
 		String log = null;
 		
 		if(appLogIdx < appLogs.size()) {
@@ -70,16 +73,15 @@ public class LocalAppSpout extends BaseRichSpout {
 			log = appLogs.get(random.nextInt(appLogs.size()));
 		}
 		
-		String[] parts = log.split("|");
+		String[] parts = log.split("\\|");
 		//String datetime = parts[0];
 		String host = parts[1];
 		String module = parts[2];
 		String version = parts[3];
-		String method = parts[4];
-		String responseInfo = parts[5];
-		//String content = parts[6];
+		String responseInfo = parts[4];
+		//String content = parts[5];
 		
-		collector.emit(new Values(host, module, version, method, responseInfo));
+		collector.emit(new Values(host, module, version, responseInfo));
 	}
 
 	@Override
@@ -89,7 +91,6 @@ public class LocalAppSpout extends BaseRichSpout {
 				FieldNames.HOST,
 				FieldNames.MODULE,
 				FieldNames.VERSION,
-				FieldNames.METHOD,
 				FieldNames.RESPONSEINFO
 		));
 

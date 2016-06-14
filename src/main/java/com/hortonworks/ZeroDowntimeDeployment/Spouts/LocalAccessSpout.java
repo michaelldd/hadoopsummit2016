@@ -14,6 +14,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.Utils;
 
 import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 
@@ -60,7 +61,9 @@ public class LocalAccessSpout extends BaseRichSpout {
 
 	@Override
 	public void nextTuple() {
-
+		
+		Utils.sleep(10);
+		
 		String log = null;
 		
 		if(accessLogIdx < accessLogs.size()) {
@@ -69,8 +72,9 @@ public class LocalAccessSpout extends BaseRichSpout {
 		} else {
 			log = accessLogs.get(random.nextInt(accessLogs.size()));
 		}
+		//System.out.println("LOG:" + log);
 		
-		String[] parts = log.split("|");
+		String[] parts = log.split("\\|");
 		//String datetime = parts[0];
 		String host = parts[1];
 		String module = parts[2];
