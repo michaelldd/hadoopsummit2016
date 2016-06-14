@@ -17,23 +17,20 @@ import backtype.storm.tuple.Values;
 
 import com.hortonworks.ZeroDowntimeDeployment.Utils.AppMonitor;
 import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
-import com.hortonworks.ZeroDowntimeDeployment.Utils.Helper;
 
-public class AppMonitorBolt extends BaseRichBolt {
+public class AppMonitorAggregateBolt extends BaseRichBolt {
 
 	private static final long serialVersionUID = 1L;
 	private OutputCollector collector;
 
 	private Map<AppMonitor, List<Integer>> infoRates;
-	private double mean;
-	private double std;
 
 	@Override
 	public void execute(Tuple tuple) {
 
-		if (tuple.getFields().get(0).equals(FieldNames.COMMANDCOMPUTE)) {
+		if (tuple.getFields().get(0).equals(FieldNames.COMMANDAGGREGRATE)) {
 
-			aggregrateAndSubmit();
+			aggregrate();
 
 		} else {
 
@@ -52,20 +49,16 @@ public class AppMonitorBolt extends BaseRichBolt {
 			responseList = infoRates.get(appMonitor);
 
 			if (responseInfo.trim().equals("INFO")) {
-				responseList.add(0);
-			} else {
 				responseList.add(1);
+			} else {
+				responseList.add(0);
 			}
 
 		}
 
 	}
 
-	private void aggregrateAndSubmit() {
-
-		Map<AppMonitor, Double> appRate = new HashMap<>();
-
-		List<Double> rateList = new ArrayList<>();
+	private void aggregrate() {
 
 		Set<Map.Entry<AppMonitor, List<Integer>>> set = infoRates.entrySet();
 		Iterator<Map.Entry<AppMonitor, List<Integer>>> it = set.iterator();
@@ -80,59 +73,12 @@ public class AppMonitorBolt extends BaseRichBolt {
 			}
 			double tmpRate = (double)listTotal / list.size();
 
-			System.out.println(key.toString() + ":" + list.size() + ":" + tmpRate);
+			//System.out.println(key.toString() + ":" + list.size() + ":" + tmpRate);
 			
-			appRate.put(key, tmpRate);
-			rateList.add(tmpRate);
+			collector.emit(new Values(key.getHost(), key.getModule(), key.getVersion(), tmpRate));
 
 		}
 
-		double curMean = Helper.getMean(rateList);
-		double curStd = Helper.getStd(rateList, curMean);
-
-		double stdInUse = std;
-		double meanInUse = mean;
-
-		if (!Helper.isValidStd(stdInUse)) {
-			stdInUse = curStd;
-			meanInUse = curMean;
-		}
-
-		if (!Helper.isValidStd(stdInUse)) {
-
-			Set<Map.Entry<AppMonitor, Double>> outputSet = appRate.entrySet();
-			Iterator<Map.Entry<AppMonitor, Double>> outputIt = outputSet
-					.iterator();
-			while (outputIt.hasNext()) {
-				Map.Entry<AppMonitor, Double> outputEntry = outputIt.next();
-				AppMonitor outputAppMonitor = outputEntry.getKey();
-				collector.emit(new Values(outputAppMonitor.getHost(),
-						outputAppMonitor.getModule(), outputAppMonitor
-								.getVersion(), outputEntry.getValue(), 0));
-				
-			}
-
-		} else {
-
-			Set<Map.Entry<AppMonitor, Double>> outputSet = appRate.entrySet();
-			Iterator<Map.Entry<AppMonitor, Double>> outputIt = outputSet
-					.iterator();
-			while (outputIt.hasNext()) {
-				Map.Entry<AppMonitor, Double> outputEntry = outputIt.next();
-				AppMonitor outputAppMonitor = outputEntry.getKey();
-
-				double zscore = (outputEntry.getValue() - meanInUse) / stdInUse;
-
-				collector.emit(new Values(outputAppMonitor.getHost(),
-						outputAppMonitor.getModule(), outputAppMonitor
-								.getVersion(), outputEntry.getValue(), zscore));
-				
-				System.out.println(outputEntry.toString() + ":" + zscore);
-			}
-		}
-
-		mean = curMean;
-		std = curStd;
 		infoRates.clear();
 	}
 
@@ -147,7 +93,7 @@ public class AppMonitorBolt extends BaseRichBolt {
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields(FieldNames.HOST, FieldNames.MODULE,
-				FieldNames.VERSION, FieldNames.MEAN, FieldNames.ZSCORE));
+				FieldNames.VERSION, FieldNames.AVGRESPONSEINFO));
 	}
 
 }

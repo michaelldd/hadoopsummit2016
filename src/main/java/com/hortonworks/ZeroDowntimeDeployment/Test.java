@@ -15,7 +15,14 @@ public class Test {
 		map.put(new MyObj("a", "b"), new ArrayList<Integer>());
 		
 		System.out.println(map.containsKey(new MyObj("a", "b")));
+	
+		Map<String, Integer> map2 = new HashMap<>();
+		map2.put("a", 53);
+		map2.put("b", 1);
+		map2.put("c", 135);
 		
+		List<Integer> list = new ArrayList<>(map2.values());
+		System.out.println(list);
 	}
 
 }
@@ -60,3 +67,6 @@ class MyObj{
 
 	
 }
+
+
+

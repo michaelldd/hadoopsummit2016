@@ -2,7 +2,7 @@ package com.hortonworks.ZeroDowntimeDeployment.Utils;
 
 import java.util.List;
 
-public class Util {
+public class Helper {
 	
 	public static boolean isValidStd(double std) {
 		return std > 0.001;

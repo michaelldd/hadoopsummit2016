@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.hortonworks.ZeroDowntimeDeployment.Utils.AppMonitor;
+import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
+import com.hortonworks.ZeroDowntimeDeployment.Utils.Helper;
+
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -15,77 +19,41 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
-import com.hortonworks.ZeroDowntimeDeployment.Utils.AppMonitor;
-import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
-import com.hortonworks.ZeroDowntimeDeployment.Utils.Helper;
+public class AppMonitorComputeBolt extends BaseRichBolt {
 
-public class AppMonitorBolt extends BaseRichBolt {
 
 	private static final long serialVersionUID = 1L;
 	private OutputCollector collector;
 
-	private Map<AppMonitor, List<Integer>> infoRates;
 	private double mean;
 	private double std;
+	private Map<AppMonitor, Double> appRate;
 
+	
 	@Override
 	public void execute(Tuple tuple) {
 
 		if (tuple.getFields().get(0).equals(FieldNames.COMMANDCOMPUTE)) {
 
-			aggregrateAndSubmit();
+			computerZscore();
 
 		} else {
 
 			String host = tuple.getStringByField(FieldNames.HOST);
 			String module = tuple.getStringByField(FieldNames.MODULE);
 			String version = tuple.getStringByField(FieldNames.VERSION);
-			String responseInfo = tuple
-					.getStringByField(FieldNames.RESPONSEINFO);
+			double avgResponseInfo = tuple.getDoubleByField(FieldNames.AVGRESPONSEINFO);
 
 			AppMonitor appMonitor = new AppMonitor(host, module, version);
-			List<Integer> responseList = null;
-
-			if (!infoRates.containsKey(appMonitor)) {
-				infoRates.put(appMonitor, new ArrayList<Integer>());
-			}
-			responseList = infoRates.get(appMonitor);
-
-			if (responseInfo.trim().equals("INFO")) {
-				responseList.add(0);
-			} else {
-				responseList.add(1);
-			}
+			appRate.put(appMonitor, avgResponseInfo);
 
 		}
 
 	}
 
-	private void aggregrateAndSubmit() {
+	private void computerZscore() {
 
-		Map<AppMonitor, Double> appRate = new HashMap<>();
-
-		List<Double> rateList = new ArrayList<>();
-
-		Set<Map.Entry<AppMonitor, List<Integer>>> set = infoRates.entrySet();
-		Iterator<Map.Entry<AppMonitor, List<Integer>>> it = set.iterator();
-		while (it.hasNext()) {
-			Map.Entry<AppMonitor, List<Integer>> entry = it.next();
-			List<Integer> list = entry.getValue();
-			AppMonitor key = entry.getKey();
-			
-			int listTotal = 0;
-			for (int i : list) {
-				listTotal += i;
-			}
-			double tmpRate = (double)listTotal / list.size();
-
-			System.out.println(key.toString() + ":" + list.size() + ":" + tmpRate);
-			
-			appRate.put(key, tmpRate);
-			rateList.add(tmpRate);
-
-		}
+		List<Double> rateList = new ArrayList<>(appRate.values());
 
 		double curMean = Helper.getMean(rateList);
 		double curStd = Helper.getStd(rateList, curMean);
@@ -133,7 +101,7 @@ public class AppMonitorBolt extends BaseRichBolt {
 
 		mean = curMean;
 		std = curStd;
-		infoRates.clear();
+		appRate.clear();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -141,7 +109,9 @@ public class AppMonitorBolt extends BaseRichBolt {
 	public void prepare(Map conf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		infoRates = new HashMap<>();
+		this.mean = 0;
+		this.std = 0;
+		this.appRate = new HashMap<>();
 	}
 
 	@Override
@@ -151,3 +121,4 @@ public class AppMonitorBolt extends BaseRichBolt {
 	}
 
 }
+

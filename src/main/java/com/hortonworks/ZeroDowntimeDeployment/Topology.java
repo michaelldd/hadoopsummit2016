@@ -6,24 +6,32 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 
-import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorBolt;
-import com.hortonworks.ZeroDowntimeDeployment.Spouts.CommandComputeSpout;
-import com.hortonworks.ZeroDowntimeDeployment.Spouts.LocalAppSpout;
+import com.hortonworks.ZeroDowntimeDeployment.Spouts.LocalAccessSpout;
 
 public class Topology {
-	
+
 	public static void main(String[] args) throws Exception {
 
 		TopologyBuilder builder = new TopologyBuilder();
-
-		//builder.setSpout("LocalAccessSpout", new LocalAccessSpout(), 1);
+		
+		/*
 		builder.setSpout("LocalAppSpout", new LocalAppSpout(), 1);
-		builder.setSpout("CommandComputeSpout", new CommandComputeSpout(), 1);
+		builder.setSpout("CommandAggregrateSpout", new CommandAggregrateSpout(), 1);
 		
-		builder.setBolt("AppMonitorBolt", new AppMonitorBolt(), 1)
-		.globalGrouping("LocalAppSpout")
-		.allGrouping("CommandComputeSpout");
+		builder.setBolt("CommandComputedBolt", new CommandComputeBolt(), 1)
+		.allGrouping("CommandAggregrateSpout");
 		
+		builder.setBolt("AppMonitorAggregateBolt", new AppMonitorAggregateBolt(), 3)
+		.fieldsGrouping("LocalAppSpout", new Fields(FieldNames.HOST, FieldNames.MODULE, FieldNames.VERSION))
+		.allGrouping("CommandAggregrateSpout");
+		
+		builder.setBolt("AppMonitorComputeBolt", new AppMonitorComputeBolt(), 1)
+		.allGrouping("CommandComputedBolt")
+		.allGrouping("AppMonitorAggregateBolt");
+		*/
+
+		builder.setSpout("LocalAccessSpout", new LocalAccessSpout(), 1);
+
 		
 		Config conf = new Config();
 		conf.setDebug(false);

@@ -15,4 +15,7 @@ public class FieldNames {
 	public static final String COMMANDCOMPUTE = "compute";
 	public static final String ZSCORE = "zscore";
 	public static final String MEAN = "mean";
+	public static final String AVGLATANCY = "avgLatancy";
+	public static final String AVGRESPONSECODE = "avgResponseCode";
+	public static final String AVGRESPONSEINFO = "avgResponseInfo";
 }
