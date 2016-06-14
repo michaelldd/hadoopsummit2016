@@ -11,4 +11,8 @@ public class FieldNames {
 	public static final String LATENCY = "latency";
 	public static final String CONTENT = "content";
 	public static final String RESPONSEINFO = "responseInfo";
+	public static final String COMMANDAGGREGRATE = "aggregrate";
+	public static final String COMMANDCOMPUTE = "compute";
+	public static final String ZSCORE = "zscore";
+	public static final String MEAN = "mean";
 }

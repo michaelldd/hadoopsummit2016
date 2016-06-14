@@ -62,7 +62,7 @@ public class LocalAccessSpout extends BaseRichSpout {
 	@Override
 	public void nextTuple() {
 		
-		Utils.sleep(10);
+		Utils.sleep(500);
 		
 		String log = null;
 		
@@ -86,6 +86,7 @@ public class LocalAccessSpout extends BaseRichSpout {
 		//String content = parts[8];
 		
 		collector.emit(new Values(host, module, version, method, responseCode, latency));
+		
 	}
 
 	@Override

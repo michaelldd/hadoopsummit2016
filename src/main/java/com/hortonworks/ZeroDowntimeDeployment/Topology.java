@@ -6,7 +6,8 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 
-import com.hortonworks.ZeroDowntimeDeployment.Spouts.LocalAccessSpout;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Spouts.CommandComputeSpout;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.LocalAppSpout;
 
 public class Topology {
@@ -15,11 +16,17 @@ public class Topology {
 
 		TopologyBuilder builder = new TopologyBuilder();
 
-		builder.setSpout("LocalAccessSpout", new LocalAccessSpout(), 2);
-		builder.setSpout("LocalAppSpout", new LocalAppSpout(), 2);
-
+		//builder.setSpout("LocalAccessSpout", new LocalAccessSpout(), 1);
+		builder.setSpout("LocalAppSpout", new LocalAppSpout(), 1);
+		builder.setSpout("CommandComputeSpout", new CommandComputeSpout(), 1);
+		
+		builder.setBolt("AppMonitorBolt", new AppMonitorBolt(), 1)
+		.globalGrouping("LocalAppSpout")
+		.allGrouping("CommandComputeSpout");
+		
+		
 		Config conf = new Config();
-		conf.setDebug(true);
+		conf.setDebug(false);
 
 		if (args != null && args.length > 0) {
 			conf.setNumWorkers(20);
