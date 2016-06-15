@@ -117,7 +117,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields(FieldNames.HOST, FieldNames.MODULE,
-				FieldNames.VERSION, FieldNames.MEAN, FieldNames.ZSCORE));
+				FieldNames.VERSION, FieldNames.AVGRESPONSEINFO, FieldNames.ZSCORE));
 	}
 
 }

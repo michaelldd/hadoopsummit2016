@@ -30,6 +30,7 @@ public class HostResponseAggregateBolt extends BaseRichBolt {
 		if (tuple.getFields().get(0).equals(FieldNames.COMMANDAGGREGRATE)) {
 
 			aggregrate();
+			responseMap.clear();
 
 		} else {
 
@@ -70,6 +71,7 @@ public class HostResponseAggregateBolt extends BaseRichBolt {
 			}
 			double tmpRate = (double)total / list.size();
 			
+			//System.out.println("HostResponse:" + host + ":" + list.size() + ":" + tmpRate);
 			collector.emit(new Values(host, tmpRate));
 		}
 		

@@ -34,6 +34,8 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 
 		if (tuple.getFields().get(0).equals(FieldNames.COMMANDCOMPUTE)) {
 
+			//System.out.println("compute zscore");
+			
 			computerZscore();
 
 		} else {
@@ -41,6 +43,7 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 			String host = tuple.getStringByField(FieldNames.HOST);
 			double avgResponseCode = tuple.getDoubleByField(FieldNames.AVGRESPONSECODE);
 
+			//System.out.println(host + " receive:" + avgResponseCode);
 			hostResponseRate.put(host, avgResponseCode);
 
 		}
@@ -62,8 +65,9 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 			meanInUse = curMean;
 		}
 
+		
 		if (!Helper.isValidStd(stdInUse)) {
-
+			
 			Set<Map.Entry<String, Double>> outputSet = hostResponseRate.entrySet();
 			Iterator<Map.Entry<String, Double>> outputIt = outputSet
 					.iterator();
@@ -74,7 +78,7 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 			}
 
 		} else {
-
+			
 			Set<Map.Entry<String, Double>> outputSet = hostResponseRate.entrySet();
 			Iterator<Map.Entry<String, Double>> outputIt = outputSet
 					.iterator();
@@ -84,9 +88,11 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 
 				double zscore = (outputEntry.getValue() - meanInUse) / stdInUse;
 
+				System.out.println("hostResponseRate:" + host + ":" + outputEntry.getValue() + ":zscore:" + zscore);
+				
 				collector.emit(new Values(host, outputEntry.getValue(), zscore));
 				
-				System.out.println(outputEntry.toString() + ":" + zscore);
+				
 			}
 		}
 

@@ -5,7 +5,7 @@ import java.util.List;
 public class Helper {
 	
 	public static boolean isValidStd(double std) {
-		return std > 0.001;
+		return std > 0.00001;
 	}
 
 	public static double getStd(List<Double> rateList, double curMean) {

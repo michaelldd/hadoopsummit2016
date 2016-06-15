@@ -31,6 +31,7 @@ public class AppMonitorAggregateBolt extends BaseRichBolt {
 		if (tuple.getFields().get(0).equals(FieldNames.COMMANDAGGREGRATE)) {
 
 			aggregrate();
+			infoRates.clear();
 
 		} else {
 
@@ -78,8 +79,6 @@ public class AppMonitorAggregateBolt extends BaseRichBolt {
 			collector.emit(new Values(key.getHost(), key.getModule(), key.getVersion(), tmpRate));
 
 		}
-
-		infoRates.clear();
 	}
 
 	@SuppressWarnings("rawtypes")

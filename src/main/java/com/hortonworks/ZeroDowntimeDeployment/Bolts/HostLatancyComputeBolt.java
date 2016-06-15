@@ -86,7 +86,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 
 				collector.emit(new Values(host, outputEntry.getValue(), zscore));
 				
-				System.out.println(outputEntry.toString() + ":" + zscore);
+				System.out.println("latancyRate:" + host + ":" + outputEntry.getValue() + ":zscore:" + zscore);
 			}
 		}
 

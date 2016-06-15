@@ -30,6 +30,7 @@ public class HostLatancyAggregateBolt  extends BaseRichBolt {
 		if (tuple.getFields().get(0).equals(FieldNames.COMMANDAGGREGRATE)) {
 
 			aggregrate();
+			latancyMap.clear();
 
 		} else {
 
@@ -64,6 +65,7 @@ public class HostLatancyAggregateBolt  extends BaseRichBolt {
 			}
 			double tmpRate = total / list.size();
 			
+			//System.out.println("HostLatancy:" + host + ":" + list.size() + ":" + tmpRate);
 			collector.emit(new Values(host, tmpRate));
 		}
 		
