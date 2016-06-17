@@ -25,7 +25,7 @@ public class AppSpout {
 		BrokerHosts hosts = new ZkHosts(Configs.kafka_zookeeper_host_port);
 		String topic = Configs.kafka_topic_app;
 		String zkRoot = Configs.kafka_zkRoot_app;
-		String consumerGroupId = "apptest1";
+		String consumerGroupId = Configs.kafka_zkRoot_consumerGroupId;
 
 		SpoutConfig spoutConfig = new SpoutConfig(hosts, topic, zkRoot,
 				consumerGroupId);
