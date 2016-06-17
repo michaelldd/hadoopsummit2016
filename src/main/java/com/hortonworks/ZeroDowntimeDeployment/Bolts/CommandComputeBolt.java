@@ -24,6 +24,7 @@ public class CommandComputeBolt extends BaseRichBolt {
 			Utils.sleep(1000);
 			collector.emit(new Values(FieldNames.COMMANDCOMPUTE));
 		}
+		collector.ack(tuple);
 	}
 
 	@SuppressWarnings("rawtypes")

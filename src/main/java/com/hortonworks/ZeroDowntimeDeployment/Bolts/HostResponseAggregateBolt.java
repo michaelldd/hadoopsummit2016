@@ -53,6 +53,7 @@ public class HostResponseAggregateBolt extends BaseRichBolt {
 
 		}
 		
+		collector.ack(tuple);
 	}
 
 	private void aggregrate() {

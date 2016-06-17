@@ -1,6 +1,8 @@
 package com.hortonworks.ZeroDowntimeDeployment.Bolts;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +30,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 	private double mean;
 	private double std;
 	private Map<AppMonitor, Double> appRate;
-
+	SimpleDateFormat parseDate;
 	
 	@Override
 	public void execute(Tuple tuple) {
@@ -49,6 +51,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 
 		}
 
+		collector.ack(tuple);
 	}
 
 	private void computerZscore() {
@@ -74,9 +77,11 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 			while (outputIt.hasNext()) {
 				Map.Entry<AppMonitor, Double> outputEntry = outputIt.next();
 				AppMonitor outputAppMonitor = outputEntry.getKey();
+				Date date = new Date();
+				String dateString = parseDate.format(date);
 				collector.emit(new Values(outputAppMonitor.getHost(),
 						outputAppMonitor.getModule(), outputAppMonitor
-								.getVersion(), outputEntry.getValue(), 0));
+								.getVersion(), outputEntry.getValue(), 0, dateString));
 				
 			}
 
@@ -91,11 +96,14 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 
 				double zscore = (outputEntry.getValue() - meanInUse) / stdInUse;
 
+				Date date = new Date();
+				String dateString = parseDate.format(date);
+				
 				collector.emit(new Values(outputAppMonitor.getHost(),
 						outputAppMonitor.getModule(), outputAppMonitor
-								.getVersion(), outputEntry.getValue(), zscore));
+								.getVersion(), outputEntry.getValue(), zscore, dateString));
 				
-				System.out.println(outputEntry.toString() + ":" + zscore);
+				//System.out.println(outputEntry.toString() + ":" + zscore);
 			}
 		}
 
@@ -112,12 +120,13 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 		this.mean = 0;
 		this.std = 0;
 		this.appRate = new HashMap<>();
+		this.parseDate = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
 	}
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields(FieldNames.HOST, FieldNames.MODULE,
-				FieldNames.VERSION, FieldNames.AVGRESPONSEINFO, FieldNames.ZSCORE));
+				FieldNames.VERSION, FieldNames.AVGRESPONSEINFO, FieldNames.ZSCORE, FieldNames.PROCESSTIME));
 	}
 
 }

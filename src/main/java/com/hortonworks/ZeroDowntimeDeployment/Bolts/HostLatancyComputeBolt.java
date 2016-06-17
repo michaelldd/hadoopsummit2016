@@ -1,6 +1,8 @@
 package com.hortonworks.ZeroDowntimeDeployment.Bolts;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +29,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 	private double mean;
 	private double std;
 	private Map<String, Double> latancyRate;
-
+	SimpleDateFormat parseDate;
 	
 	@Override
 	public void execute(Tuple tuple) {
@@ -45,6 +47,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 
 		}
 
+		collector.ack(tuple);
 	}
 
 	private void computerZscore() {
@@ -70,7 +73,9 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 			while (outputIt.hasNext()) {
 				Map.Entry<String, Double> outputEntry = outputIt.next();
 				String host = outputEntry.getKey();
-				collector.emit(new Values(host, outputEntry.getValue(), 0));
+				Date date = new Date();
+				String dateString = parseDate.format(date);
+				collector.emit(new Values(host, outputEntry.getValue(), 0, dateString));
 			}
 
 		} else {
@@ -83,10 +88,11 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 				String host = outputEntry.getKey();
 
 				double zscore = (outputEntry.getValue() - meanInUse) / stdInUse;
-
-				collector.emit(new Values(host, outputEntry.getValue(), zscore));
+				Date date = new Date();
+				String dateString = parseDate.format(date);
+				collector.emit(new Values(host, outputEntry.getValue(), zscore, dateString));
 				
-				System.out.println("latancyRate:" + host + ":" + outputEntry.getValue() + ":zscore:" + zscore);
+				//System.out.println("latancyRate:" + host + ":" + outputEntry.getValue() + ":zscore:" + zscore);
 			}
 		}
 
@@ -103,11 +109,13 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 		this.mean = 0;
 		this.std = 0;
 		this.latancyRate = new HashMap<>();
+		
+		this.parseDate = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
 	}
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields(FieldNames.HOST, FieldNames.AVGLATANCY, FieldNames.ZSCORE));
+		declarer.declare(new Fields(FieldNames.HOST, FieldNames.AVGLATANCY, FieldNames.ZSCORE, FieldNames.PROCESSTIME));
 	}
 
 }

@@ -12,10 +12,10 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
-// java -cp hadoopsummit2016-0.0.1-SNAPSHOT.jar com.hortonworkZeroDowntimeDeployment.Kafka.LogProducer gwy-wwang.cloud.hortonworks.com:6667 nn1-wwang.cloud.hortonworks.com:2181 acclog-simulation ./acclog_dev.log
+// java -cp hadoopsummit2016-0.0.1-SNAPSHOT.jar com.hortonworks.ZeroDowntimeDeployment.Kafka.LogProducer gwy-wwang.cloud.hortonworks.com:6667 nn1-wwang.cloud.hortonworks.com:2181 acclog-simulation ./acclog_dev.log
 // /usr/hdp/current/kafka-broker/bin/kafka-console-consumer.sh --zookeeper nn1-wwang.cloud.hortonworks.com:2181 --topic acclog-simulation --from-beginning
 
-// java -cp hadoopsummit2016-0.0.1-SNAPSHOT.jar com.hortonworkZeroDowntimeDeployment.Kafka.LogProducer gwy-wwang.cloud.hortonworks.com:6667 nn1-wwang.cloud.hortonworks.com:2181 applog-simulation ./applog_dev.log
+// java -cp hadoopsummit2016-0.0.1-SNAPSHOT.jar com.hortonworks.ZeroDowntimeDeployment.Kafka.LogProducer gwy-wwang.cloud.hortonworks.com:6667 nn1-wwang.cloud.hortonworks.com:2181 applog-simulation ./applog_dev.log
 // /usr/hdp/current/kafka-broker/bin/kafka-console-consumer.sh --zookeeper nn1-wwang.cloud.hortonworks.com:2181 --topic applog-simulation --from-beginning
 public class LogProducer {
 

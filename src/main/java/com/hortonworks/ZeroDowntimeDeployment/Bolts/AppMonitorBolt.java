@@ -58,7 +58,7 @@ public class AppMonitorBolt extends BaseRichBolt {
 			}
 
 		}
-
+		collector.ack(tuple);
 	}
 
 	private void aggregrateAndSubmit() {

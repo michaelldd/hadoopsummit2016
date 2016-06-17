@@ -47,6 +47,7 @@ public class HostLatancyAggregateBolt  extends BaseRichBolt {
 			latancyList.add(latancy);
 		}
 		
+		collector.ack(tuple);
 	}
 
 	private void aggregrate() {
