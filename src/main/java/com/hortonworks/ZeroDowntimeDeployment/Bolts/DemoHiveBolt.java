@@ -7,7 +7,6 @@ import org.apache.storm.hive.common.HiveOptions;
 import backtype.storm.tuple.Fields;
 
 import com.hortonworks.ZeroDowntimeDeployment.Utils.Configs;
-import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 
 /*
 CREATE TABLE hostresponse(host STRING, avgresponsecode double, zscore double, processtime string)

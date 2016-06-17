@@ -25,13 +25,13 @@ import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 
 // storm jar hadoopsummit2016-0.0.1-SNAPSHOT.jar com.hortonworks.ZeroDowntimeDeployment.Topology test1
 
-public class Topology {
+public class TopologyTest {
 
 	public static void main(String[] args) throws Exception {
 
 		TopologyBuilder builder = new TopologyBuilder();
 
-		builder.setSpout("AccessSpout", (new AccessSpout()).getSpout());
+		//builder.setSpout("AccessSpout", (new AccessSpout()).getSpout());
 		builder.setSpout("AppSpout", (new AppSpout()).getSpout());
 
 		builder.setSpout("CommandAggregrateSpout",
@@ -39,6 +39,7 @@ public class Topology {
 		builder.setBolt("CommandComputedBolt", new CommandComputeBolt(), 1)
 				.allGrouping("CommandAggregrateSpout");
 
+		/*
 		// host response
 		builder.setBolt("HostResponseAggregateBolt",
 				new HostResponseAggregateBolt(), 3)
@@ -57,6 +58,8 @@ public class Topology {
 		builder.setBolt("hostResponseHiveBolt", hostResponseHiveBolt, 1)
 			.shuffleGrouping("HostResponseComputeBolt");
 
+		
+		
 		// host latancy
 		builder.setBolt("HostLatancyAggregateBolt", new HostLatancyAggregateBolt(), 3)
 		.fieldsGrouping("AccessSpout", new Fields(FieldNames.HOST))
@@ -73,6 +76,7 @@ public class Topology {
 		builder.setBolt("hostLatancyHiveBolt", hostLatancyHiveBolt, 1)
 			.shuffleGrouping("HostLatancyComputeBolt");
 		
+		*/
 		
 		// app monitor
 		builder.setBolt("AppMonitorAggregateBolt", new AppMonitorAggregateBolt(), 3)
