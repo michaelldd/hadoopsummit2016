@@ -9,11 +9,14 @@ import backtype.storm.utils.Utils;
 
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorAggregateBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorComputeBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorSolrBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.CommandComputeBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostLatancyAggregateBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostLatancyComputeBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostLatancySolrBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostResponseAggregateBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostResponseComputeBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostResponseSolrBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.CommandAggregrateSpout;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.LocalAccessSpout;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.LocalAppSpout;
@@ -41,6 +44,8 @@ public class TopologyLocal {
 			.allGrouping("CommandComputedBolt")
 			.allGrouping("AppMonitorAggregateBolt");
 		
+		builder.setBolt("AppMonitorSolrBolt", new AppMonitorSolrBolt(), 1)
+			.shuffleGrouping("AppMonitorComputeBolt");
 		
 		/*
 		builder.setSpout("LocalAccessSpout", new LocalAccessSpout(), 1);
@@ -56,6 +61,9 @@ public class TopologyLocal {
 		builder.setBolt("HostResponseComputeBolt", new HostResponseComputeBolt(), 1)
 				.allGrouping("CommandComputedBolt")
 				.allGrouping("HostResponseAggregateBolt");
+		
+		builder.setBolt("HostResponseSolrBolt", new HostResponseSolrBolt(), 1)
+			.shuffleGrouping("HostResponseComputeBolt");
 		
 		
 		/*
@@ -73,7 +81,8 @@ public class TopologyLocal {
 				.allGrouping("CommandComputedBolt")
 				.allGrouping("HostLatancyAggregateBolt");
 
-		
+		builder.setBolt("HostLatancySolrBolt", new HostLatancySolrBolt(), 1)
+			.shuffleGrouping("HostLatancyComputeBolt");
 
 		Config conf = new Config();
 		conf.setDebug(false);
