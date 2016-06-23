@@ -35,6 +35,11 @@ public class HostResponseAggregateBolt extends BaseRichBolt {
 		} else {
 
 			String host = tuple.getStringByField(FieldNames.HOST);
+			if(host.equals(FieldNames.BADRECORD)){
+				collector.ack(tuple);
+				return;
+			}
+			
 			String responseCode = tuple
 					.getStringByField(FieldNames.RESPONSECODE);
 

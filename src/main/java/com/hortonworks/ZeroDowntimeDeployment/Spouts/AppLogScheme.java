@@ -16,9 +16,18 @@ public class AppLogScheme implements Scheme {
 	@Override
 	public List<Object> deserialize(byte[] bytes) {
 
+		if(bytes == null) {
+			return new Values(FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD);
+		}
+		
 		String log = null;
 		try {
 			log = new String(bytes, "UTF-8");
+			
+			if(log.trim().equals("")) {
+				return new Values(FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD);
+			}
+			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

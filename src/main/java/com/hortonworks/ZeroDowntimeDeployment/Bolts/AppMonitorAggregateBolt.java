@@ -36,11 +36,16 @@ public class AppMonitorAggregateBolt extends BaseRichBolt {
 		} else {
 
 			String host = tuple.getStringByField(FieldNames.HOST);
+			if(host.equals(FieldNames.BADRECORD)){
+				collector.ack(tuple);
+				return;
+			}
+			
 			String module = tuple.getStringByField(FieldNames.MODULE);
 			String version = tuple.getStringByField(FieldNames.VERSION);
 			String responseInfo = tuple
 					.getStringByField(FieldNames.RESPONSEINFO);
-
+			
 			AppMonitor appMonitor = new AppMonitor(host, module, version);
 			List<Integer> responseList = null;
 

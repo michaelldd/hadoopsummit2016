@@ -50,7 +50,7 @@ public class HostResponseSolrBolt extends BaseRichBolt {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
-		this.server =  new HttpSolrServer(Configs.solr_server);
+		this.server =  new HttpSolrServer(Configs.solr_server_cloud);
 		this.collector = collector;
 	}
 

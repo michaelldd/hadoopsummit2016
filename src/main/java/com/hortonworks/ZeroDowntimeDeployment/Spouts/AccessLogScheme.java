@@ -17,7 +17,16 @@ public class AccessLogScheme implements Scheme{
 	public List<Object> deserialize(byte[] bytes) {
 		
 		try {
+			
+			if(bytes == null) {
+				return new Values(FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD);
+			}
+			
 			String log = new String(bytes, "UTF-8");
+			
+			if(log.trim().equals("")){
+				return new Values(FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD, FieldNames.BADRECORD);
+			}
 			
 			String[] parts = log.split("\\|");
 			//String datetime = parts[0];

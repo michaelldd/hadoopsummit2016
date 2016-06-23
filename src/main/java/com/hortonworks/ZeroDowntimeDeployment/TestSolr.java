@@ -3,17 +3,22 @@ package com.hortonworks.ZeroDowntimeDeployment;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 
+import com.hortonworks.ZeroDowntimeDeployment.Utils.Configs;
+
 @SuppressWarnings("deprecation")
 public class TestSolr {
 
 	public static void main(String[] args) {
 
-		HttpSolrServer server = new HttpSolrServer(
-				"http://localhost:8983/solr/gettingstarted");
+		HttpSolrServer server = new HttpSolrServer(Configs.solr_server_cloud);
 
 		SolrInputDocument doc = new SolrInputDocument();
-		doc.addField("id", "test1");
-		doc.addField("accessid", 123);
+		
+		String msgId = args[0];
+		String msgAssId = args[1];
+		
+		doc.addField("id", msgId);
+		doc.addField("accessid", msgAssId);
 		try {
 			server.add(doc);
 			server.commit(false, false);

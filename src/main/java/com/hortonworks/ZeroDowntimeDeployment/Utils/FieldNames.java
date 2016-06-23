@@ -19,4 +19,5 @@ public class FieldNames {
 	public static final String AVGRESPONSECODE = "avgresponsecode";
 	public static final String AVGRESPONSEINFO = "avgresponseinfo";
 	public static final String PROCESSTIME = "processtime";
+	public static final String BADRECORD = "badrecord";
 }

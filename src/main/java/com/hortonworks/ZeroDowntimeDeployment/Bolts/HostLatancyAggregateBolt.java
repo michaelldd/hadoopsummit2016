@@ -35,6 +35,11 @@ public class HostLatancyAggregateBolt  extends BaseRichBolt {
 		} else {
 
 			String host = tuple.getStringByField(FieldNames.HOST);
+			if(host.equals(FieldNames.BADRECORD)){
+				collector.ack(tuple);
+				return;
+			}
+			
 			double latancy = Double.parseDouble(tuple.getStringByField(FieldNames.LATENCY));
 
 			List<Double> latancyList = null;

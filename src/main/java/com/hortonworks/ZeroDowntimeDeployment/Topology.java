@@ -11,12 +11,15 @@ import backtype.storm.utils.Utils;
 
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorAggregateBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorComputeBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.AppMonitorSolrBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.CommandComputeBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.DemoHiveBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostLatancyAggregateBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostLatancyComputeBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostLatancySolrBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostResponseAggregateBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostResponseComputeBolt;
+import com.hortonworks.ZeroDowntimeDeployment.Bolts.HostResponseSolrBolt;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.AccessSpout;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.AppSpout;
 import com.hortonworks.ZeroDowntimeDeployment.Spouts.CommandAggregrateSpout;
@@ -56,6 +59,9 @@ public class Topology {
 	    
 		builder.setBolt("hostResponseHiveBolt", hostResponseHiveBolt, 1)
 			.shuffleGrouping("HostResponseComputeBolt");
+		
+		builder.setBolt("HostResponseSolrBolt", new HostResponseSolrBolt(), 1)
+			.shuffleGrouping("HostResponseComputeBolt");
 
 		// host latancy
 		builder.setBolt("HostLatancyAggregateBolt", new HostLatancyAggregateBolt(), 3)
@@ -73,6 +79,8 @@ public class Topology {
 		builder.setBolt("hostLatancyHiveBolt", hostLatancyHiveBolt, 1)
 			.shuffleGrouping("HostLatancyComputeBolt");
 		
+		builder.setBolt("HostLatancySolrBolt", new HostLatancySolrBolt(), 1)
+			.shuffleGrouping("HostLatancyComputeBolt");
 		
 		// app monitor
 		builder.setBolt("AppMonitorAggregateBolt", new AppMonitorAggregateBolt(), 3)
@@ -89,6 +97,9 @@ public class Topology {
 				Configs.tblName_appmonitor)).getHiveBolt();
 	    
 		builder.setBolt("appMonitorHiveBolt", appMonitorHiveBolt, 1)
+			.shuffleGrouping("AppMonitorComputeBolt");
+		
+		builder.setBolt("AppMonitorSolrBolt", new AppMonitorSolrBolt(), 1)
 			.shuffleGrouping("AppMonitorComputeBolt");
 		
 		

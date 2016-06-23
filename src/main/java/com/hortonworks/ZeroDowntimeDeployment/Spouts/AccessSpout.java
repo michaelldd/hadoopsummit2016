@@ -23,9 +23,9 @@ public class AccessSpout {
 	private SpoutConfig constructKafkaSpoutConf() {
 		
 		BrokerHosts hosts = new ZkHosts(Configs.kafka_zookeeper_host_port);
-		String topic = Configs.kafka_topic_access;
-		String zkRoot = Configs.kafka_zkRoot_access;
-		String consumerGroupId = Configs.kafka_zkRoot_consumerGroupId;
+		String topic = Configs.kafka_topic_access_cloud;
+		String zkRoot = Configs.kafka_zkRoot_access_cloud;
+		String consumerGroupId = Configs.kafka_zkRoot_consumerGroupId_cloud;
 
 		SpoutConfig spoutConfig = new SpoutConfig(hosts, topic, zkRoot,
 				consumerGroupId);
