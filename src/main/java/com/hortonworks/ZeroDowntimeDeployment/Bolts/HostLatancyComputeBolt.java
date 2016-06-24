@@ -111,7 +111,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 		this.std = 0;
 		this.latancyRate = new HashMap<>();
 		
-		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ssZ");
+		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	}
 
 	@Override

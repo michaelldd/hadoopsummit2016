@@ -121,7 +121,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 		this.mean = 0;
 		this.std = 0;
 		this.appRate = new HashMap<>();
-		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ssZ");
+		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	}
 
 	@Override

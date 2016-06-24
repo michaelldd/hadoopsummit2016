@@ -119,7 +119,7 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 		this.std = 0;
 		this.hostResponseRate = new HashMap<>();
 		
-		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ssZ");
+		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		
 	}
 
