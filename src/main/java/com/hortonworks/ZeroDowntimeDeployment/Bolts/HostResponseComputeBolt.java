@@ -19,6 +19,7 @@ import backtype.storm.tuple.Values;
 
 import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 import com.hortonworks.ZeroDowntimeDeployment.Utils.Helper;
+import com.hortonworks.ZeroDowntimeDeployment.Utils.SolrDate;
 
 public class HostResponseComputeBolt extends BaseRichBolt {
 
@@ -78,7 +79,7 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 				Map.Entry<String, Double> outputEntry = outputIt.next();
 				String host = outputEntry.getKey();
 				Date date = new Date();
-				String dateString = parseDate.format(date);
+				String dateString = SolrDate.getSolrDate(parseDate.format(date));
 				collector.emit(new Values(host, outputEntry.getValue(), 0, dateString));
 			}
 
@@ -96,7 +97,7 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 				System.out.println("hostResponseRate:" + host + ":" + outputEntry.getValue() + ":zscore:" + zscore);
 				
 				Date date = new Date();
-				String dateString = parseDate.format(date);
+				String dateString = SolrDate.getSolrDate(parseDate.format(date));
 				
 				collector.emit(new Values(host, outputEntry.getValue(), zscore, dateString));
 				
@@ -118,7 +119,7 @@ public class HostResponseComputeBolt extends BaseRichBolt {
 		this.std = 0;
 		this.hostResponseRate = new HashMap<>();
 		
-		this.parseDate = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
+		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ssZ");
 		
 	}
 

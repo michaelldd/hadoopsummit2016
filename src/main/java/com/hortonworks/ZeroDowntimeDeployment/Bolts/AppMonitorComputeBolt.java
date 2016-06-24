@@ -12,6 +12,7 @@ import java.util.Set;
 import com.hortonworks.ZeroDowntimeDeployment.Utils.AppMonitor;
 import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 import com.hortonworks.ZeroDowntimeDeployment.Utils.Helper;
+import com.hortonworks.ZeroDowntimeDeployment.Utils.SolrDate;
 
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -78,7 +79,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 				Map.Entry<AppMonitor, Double> outputEntry = outputIt.next();
 				AppMonitor outputAppMonitor = outputEntry.getKey();
 				Date date = new Date();
-				String dateString = parseDate.format(date);
+				String dateString = SolrDate.getSolrDate(parseDate.format(date));
 				collector.emit(new Values(outputAppMonitor.getHost(),
 						outputAppMonitor.getModule(), outputAppMonitor
 								.getVersion(), outputEntry.getValue(), 0, dateString));
@@ -97,7 +98,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 				double zscore = (outputEntry.getValue() - meanInUse) / stdInUse;
 
 				Date date = new Date();
-				String dateString = parseDate.format(date);
+				String dateString = SolrDate.getSolrDate(parseDate.format(date));
 				
 				collector.emit(new Values(outputAppMonitor.getHost(),
 						outputAppMonitor.getModule(), outputAppMonitor
@@ -120,7 +121,7 @@ public class AppMonitorComputeBolt extends BaseRichBolt {
 		this.mean = 0;
 		this.std = 0;
 		this.appRate = new HashMap<>();
-		this.parseDate = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
+		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ssZ");
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import backtype.storm.tuple.Values;
 
 import com.hortonworks.ZeroDowntimeDeployment.Utils.FieldNames;
 import com.hortonworks.ZeroDowntimeDeployment.Utils.Helper;
+import com.hortonworks.ZeroDowntimeDeployment.Utils.SolrDate;
 
 public class HostLatancyComputeBolt extends BaseRichBolt {
 
@@ -74,7 +75,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 				Map.Entry<String, Double> outputEntry = outputIt.next();
 				String host = outputEntry.getKey();
 				Date date = new Date();
-				String dateString = parseDate.format(date);
+				String dateString = SolrDate.getSolrDate(parseDate.format(date));
 				collector.emit(new Values(host, outputEntry.getValue(), 0, dateString));
 			}
 
@@ -89,7 +90,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 
 				double zscore = (outputEntry.getValue() - meanInUse) / stdInUse;
 				Date date = new Date();
-				String dateString = parseDate.format(date);
+				String dateString = SolrDate.getSolrDate(parseDate.format(date));
 				collector.emit(new Values(host, outputEntry.getValue(), zscore, dateString));
 				
 				//System.out.println("latancyRate:" + host + ":" + outputEntry.getValue() + ":zscore:" + zscore);
@@ -110,7 +111,7 @@ public class HostLatancyComputeBolt extends BaseRichBolt {
 		this.std = 0;
 		this.latancyRate = new HashMap<>();
 		
-		this.parseDate = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
+		this.parseDate = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ssZ");
 	}
 
 	@Override
