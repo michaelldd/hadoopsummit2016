@@ -40,8 +40,18 @@ public class HostLatancyAggregateBolt  extends BaseRichBolt {
 				return;
 			}
 			
-			double latancy = Double.parseDouble(tuple.getStringByField(FieldNames.LATENCY));
-
+			double latancy;
+			
+			try{
+				latancy = Double.parseDouble(tuple.getStringByField(FieldNames.LATENCY));
+			} catch(Exception e) {
+				System.out.println("Latancy exception:");
+				System.out.println(tuple.getStringByField(FieldNames.LATENCY));
+				System.out.println(e);
+				return;
+			}
+			
+			
 			List<Double> latancyList = null;
 
 			if (!latancyMap.containsKey(host)) {
@@ -69,7 +79,13 @@ public class HostLatancyAggregateBolt  extends BaseRichBolt {
 			for(Double d : list) {
 				total += d;
 			}
-			double tmpRate = total / list.size();
+			
+			double tmpRate = 0;
+			
+			if(list.size() != 0){
+				tmpRate = total / list.size();	
+			}
+			
 			
 			//System.out.println("HostLatancy:" + host + ":" + list.size() + ":" + tmpRate);
 			collector.emit(new Values(host, tmpRate));

@@ -75,7 +75,11 @@ public class HostResponseAggregateBolt extends BaseRichBolt {
 			for(Integer i : list) {
 				total += i;
 			}
-			double tmpRate = (double)total / list.size();
+			
+			double tmpRate = 0;
+			if(list.size() != 0) {
+				tmpRate = (double)total / list.size();
+			}
 			
 			//System.out.println("HostResponse:" + host + ":" + list.size() + ":" + tmpRate);
 			collector.emit(new Values(host, tmpRate));

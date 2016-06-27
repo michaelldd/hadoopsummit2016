@@ -78,7 +78,11 @@ public class AppMonitorAggregateBolt extends BaseRichBolt {
 			for (int i : list) {
 				listTotal += i;
 			}
-			double tmpRate = (double)listTotal / list.size();
+			
+			double tmpRate = 0;
+			if(list.size() != 0) {
+				tmpRate = (double)listTotal / list.size();				
+			}
 
 			//System.out.println(key.toString() + ":" + list.size() + ":" + tmpRate);
 			

@@ -1,6 +1,5 @@
 package com.hortonworks.ZeroDowntimeDeployment.Bolts;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
@@ -35,7 +34,6 @@ public class HostResponseSolrBolt extends BaseRichBolt {
 		doc.addField("avgresponsecode", avgResponseCode);
 		doc.addField("zscore", zscore);
 		doc.addField("processtime", processTime);
-		//doc.addField("event_timestamp", new Date());
 		doc.addField( "event_timestamp", new java.util.Date(), 1.0f);
 		
 		//System.out.println("response-" + host);
